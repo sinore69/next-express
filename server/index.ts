@@ -3,7 +3,6 @@ import { initTRPC } from "@trpc/server";
 import {createExpressMiddleware} from "@trpc/server/adapters/express";
 import {z} from "zod";
 import {prisma }from "./db";
-import { json } from "stream/consumers";
 
 
 require('dotenv').config();
@@ -12,7 +11,7 @@ const app = express()
 app.use(cors());
 const t = initTRPC.create();
 
-//new route
+//dummy route
 export const newrouter=t.router({
   hello:t.procedure.input(z.object({
     from_id:z.string(),
@@ -38,15 +37,18 @@ const Upload=async(comment:string)=>{
     }
   })
 }
+//app route
 export const appRouter=t.router({
+  //upload route
   upload:t.procedure.input(z.object({
     comment:z.string()
   })).mutation(async(obj)=>{
     await Upload(obj.input.comment);
   }),
+  //fetch comment route
   getcomments: t.procedure.query(async ()=>{
     const comments= await prisma.post.findMany();
-    return (comments.map(comment=>comment));
+    return comments;
   })
 })
 
