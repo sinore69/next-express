@@ -49,7 +49,18 @@ export const appRouter=t.router({
   getcomments: t.procedure.query(async ()=>{
     const comments= await prisma.post.findMany();
     return comments;
+  }),
+  delete:t.procedure.input(z.object({
+    id:z.number()
+  })).mutation(async(obj)=>{
+
+    await prisma.post.delete({
+      where:{
+        id:obj.input.id
+      }
+    })
   })
+  
 })
 
 
